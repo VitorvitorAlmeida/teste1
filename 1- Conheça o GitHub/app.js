@@ -1,45 +1,17 @@
+//Variáveis e Configuração
 let listaDeNumerosSorteados = [];
 let numeroLimite = 10;
 let numeroSecreto = gerarNumeroAleatorio(); 
-let tentantivas = 1;
-let botaoclicado = 0;
+let tentativas = 1;
+let botaoReiniciarClicado = 0;
 
+//Funções Auxiliares
 function exibirTextoNaTela(tag, texto) {
     let campo = document.querySelector(tag);
     campo.innerHTML = texto;
     responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2}); 
 }
 
-function exibirMensagemIncial() {
-    exibirTextoNaTela('h1', 'Jogo do número secreto');
-    exibirTextoNaTela('p', `Escolha um numero entre 1 e ${numeroLimite}`);
-}
-exibirMensagemIncial();
-
-function verificarChute(){
-    let chute = document.querySelector('input').value;
-
-    if (chute == numeroSecreto){
-        exibirTextoNaTela('h1', 'ACERTOU!');
-        let palavraTentativa = tentantivas > 1 ? 'tentativas' : 'tentativa';
-        let mensagemTentativa = `Parabéns você acertou o numero secreto com ${tentantivas} ${palavraTentativa}!`;
-        exibirTextoNaTela('p', mensagemTentativa);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else{
-        if (chute > numeroSecreto){
-            exibirTextoNaTela('h1', 'ERROU!');
-            exibirTextoNaTela('p','O número secreto é menor');
-        } else{
-            exibirTextoNaTela('h1', 'ERROU!');
-            exibirTextoNaTela('p','O número secreto é maior');
-        }
-    }
-    tentantivas++;
-    limparCampo()
-}
-
-
-//Manipulando a lista
 function gerarNumeroAleatorio() {
     let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
     let quantidadeDeElementosNaLista = listaDeNumerosSorteados.length; 
@@ -62,15 +34,51 @@ function limparCampo(){
     campo.value = '';
 }
 
+//Funções do Jogo
+function exibirMensagemInicial() {
+    exibirTextoNaTela('h1', 'Jogo do número secreto');
+    exibirTextoNaTela('p', `Escolha um numero entre 1 e ${numeroLimite}`);
+}
+exibirMensagemInicial();
+
+function verificarChute(){
+    let chute = document.querySelector('input').value;
+    if (chute === ''){
+        let mensagemDeErro = ('Inválido. Por favor, digite um número');
+        exibirTextoNaTela('p', `${mensagemDeErro}`);
+        return;
+    }
+
+    if (chute == numeroSecreto){
+        exibirTextoNaTela('h1', 'ACERTOU!');
+        let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
+        let mensagemTentativa = `Parabéns você acertou o numero secreto com ${tentativas} ${palavraTentativa}!`;
+        exibirTextoNaTela('p', mensagemTentativa);
+        document.getElementById('reiniciar').removeAttribute('disabled');
+        document.getElementById('chutar').disabled = true;
+    } else{
+        if (chute > numeroSecreto){
+            exibirTextoNaTela('h1', 'ERROU!');
+            exibirTextoNaTela('p','O número secreto é menor');
+        } else{
+            exibirTextoNaTela('h1', 'ERROU!');
+            exibirTextoNaTela('p','O número secreto é maior');
+        }
+    }
+    tentativas++;
+    limparCampo()
+}
+
 function reiniciarJogo() {
     numeroSecreto = gerarNumeroAleatorio();
     limparCampo();
-    tentantivas = 1;
-    exibirMensagemIncial();
+    tentativas = 1;
+    exibirMensagemInicial();
     document.getElementById('reiniciar').setAttribute('disabled', true);
-    botaoclicado++;
-    let palavraVezes = botaoclicado > 1 ? 'vezes' : 'vez';
-    console.log(`O jogo foi reiniciado ${botaoclicado} ${palavraVezes}.`);
+    botaoReiniciarClicado++;
+    let palavraVezes = botaoReiniciarClicado > 1 ? 'vezes' : 'vez';
+    console.log(`O jogo foi reiniciado ${botaoReiniciarClicado} ${palavraVezes}.`);
+    document.getElementById('chutar').disabled = false;
 }
 
 
